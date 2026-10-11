@@ -3,8 +3,8 @@ name: HDU Auto Book
 on:
   workflow_dispatch:
   schedule:
-    - cron: '59 19 * * *'
-    - cron: '00 20 * * *'
+    - cron: '59 11 * * *'
+    - cron: '00 12 * * *'
 
 jobs:
   bot:
