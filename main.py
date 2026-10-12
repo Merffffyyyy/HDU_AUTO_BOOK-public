@@ -295,41 +295,35 @@ if __name__ == "__main__":
     results = s.book_favorite_seat(user_config=user_config, seat_config=seat_config)
     for slot, code, message in results:
         print("预约结果[{}]: {} {}".format(slot, code, message))
-# 座位ID转实际座位号
-def seat_id_to_label(seat_id):
-    # 十楼：43025–43140，43065=41号，所以 座位号 = 座位ID - 43024
-    if 43025 <= seat_id <= 43140:
-        seat_num = seat_id - 43024
-        return f"十楼{seat_num}号"
-    return f"座位{seat_id}"
 
-# 发微信通知
-notice_msg = "📚 图书馆抢座结果\n\n"
-success_count = 0
-fail_count = 0
+    # 座位ID转实际座位号
+    def seat_id_to_label(seat_id):
+        if 43025 <= seat_id <= 43140:
+            seat_num = seat_id - 43024
+            return f"十楼{seat_num}号"
+        return f"座位{seat_id}"
 
-for slot, code, msg in results:
-    # 把座位ID换算成实际座位号
-    if "座位:" in msg:
-        seat_id_str = msg.split("座位:")[-1]
-        try:
-            seat_id = int(seat_id_str)
-            seat_label = seat_id_to_label(seat_id)
-            msg = msg.replace(f"座位:{seat_id}", seat_label)
-        except:
-            pass
-    
-    # 成功失败标记
-    if code == 0:
-        success_count += 1
-        notice_msg += f"✅ {slot}\n   {msg}\n\n"
-    else:
-        fail_count += 1
-        notice_msg += f"❌ {slot}\n   {msg}\n\n"
+    # 发微信通知
+    notice_msg = "📚 图书馆抢座结果\n\n"
+    success_count = 0
+    fail_count = 0
+    for slot, code, msg in results:
+        if "座位:" in msg:
+            seat_id_str = msg.split("座位:")[-1]
+            try:
+                seat_id = int(seat_id_str)
+                seat_label = seat_id_to_label(seat_id)
+                msg = msg.replace(f"座位:{seat_id}", seat_label)
+            except:
+                pass
+        if code == 0:
+            success_count += 1
+            notice_msg += f"✅ {slot}\n   {msg}\n\n"
+        else:
+            fail_count += 1
+            notice_msg += f"❌ {slot}\n   {msg}\n\n"
+    notice_msg += f"📊 成功{success_count}个，失败{fail_count}个"
+    s.wechatNotice("图书馆抢座", notice_msg)
 
-# 总结
-notice_msg += f"📊 成功{success_count}个，失败{fail_count}个"
-
-s.wechatNotice("图书馆抢座", notice_msg)
-  s.driver.quit()
+    s.driver.quit()
     logging.info('End of the program')
