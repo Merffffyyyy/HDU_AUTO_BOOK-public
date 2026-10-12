@@ -251,7 +251,7 @@ class SeatAutoBooker:
             url = 'https://sctapi.ftqq.com/{0}.send'.format(self.SCKey)
             data = {
                 'title': message,
-                desp: desp,
+                'desp': desp,
             }
             try:
                 r = requests.post(url, data=data)
