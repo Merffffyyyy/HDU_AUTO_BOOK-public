@@ -167,7 +167,6 @@ class SeatAutoBooker:
 
         headers = self.cfg["headers"]
         headers['Cookie'] = self.cookie
-        headers['Referer'] = 'https://hdu.huitu.zhishulib.com/Seat/Index/searchSeats'
         print(data)
         self.resp = requests.post(self.cfg["target"], data=data, headers=headers)
         self.json = json.loads(self.resp.text)
